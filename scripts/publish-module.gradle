@@ -20,7 +20,7 @@ afterEvaluate {
                 pom {
                     name = PUBLISH_ARTIFACT_ID
                     description = PUBLISH_DESCRIPTION
-                    url = 'https://github.com/matrix-org/matrix-rust-components-kotlin'
+                    url = 'https://github.com/markovsdima/matrix-rust-components-kotlin'
                     licenses {
                         license {
                             name = 'The Apache Software License, Version 2.0'
@@ -29,17 +29,28 @@ afterEvaluate {
                     }
                     developers {
                         developer {
-                            id = 'matrixdev'
-                            name = 'matrixdev'
-                            email = 'android@element.io'
+                            id = 'markovsdima'
+                            name = 'markovsdima'
+                            email = 'markovsdima@users.noreply.github.com'
                         }
                     }
 
                     scm {
-                        connection = 'scm:git:git://github.com/matrix-org/matrix-rust-components-kotlin.git'
-                        developerConnection = 'scm:git:ssh://git@github.com/matrix-org/matrix-rust-components-kotlin.git'
-                        url = 'https://github.com/matrix-org/matrix-rust-components-kotlin'
+                        connection = 'scm:git:git://github.com/markovsdima/matrix-rust-components-kotlin.git'
+                        developerConnection = 'scm:git:ssh://git@github.com/markovsdima/matrix-rust-components-kotlin.git'
+                        url = 'https://github.com/markovsdima/matrix-rust-components-kotlin'
                     }
+                }
+            }
+        }
+
+        repositories {
+            maven {
+                name = "GitHubPackages"
+                url = uri("https://maven.pkg.github.com/markovsdima/matrix-rust-components-kotlin")
+                credentials {
+                    username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR")
+                    password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
                 }
             }
         }
@@ -62,6 +73,7 @@ signing {
     required {
         !PUBLISH_VERSION.endsWith("-SNAPSHOT") &&
                 !gradle.taskGraph.hasTask("${project.path}:publishToMavenLocal") &&
-                !gradle.taskGraph.hasTask("${project.path}:publishReleasePublicationToMavenLocal")
+                !gradle.taskGraph.hasTask("${project.path}:publishReleasePublicationToMavenLocal") &&
+                !gradle.taskGraph.hasTask("${project.path}:publishReleasePublicationToGitHubPackagesRepository")
     }
 }
