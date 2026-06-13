@@ -1025,66 +1025,6 @@ public object FfiConverterTypeLatestEventValueLocalState: FfiConverterRustBuffer
 
 
 /**
- * The membership states that should be included/excluded from the timeline
- * item filters.
- */
-
-enum class MembershipChangeFilter {
-    
-    /**
-     * Include/exclude all membership state events.
-     */
-    ANY,
-    /**
-     * Include/exclude only `join` membership state events.
-     */
-    JOIN,
-    /**
-     * Include/exclude only `leave` membership state events.
-     */
-    LEAVE,
-    /**
-     * Include/exclude only `invite` membership state events.
-     */
-    INVITE,
-    /**
-     * Include/exclude only `ban` membership state events.
-     */
-    BAN,
-    /**
-     * Include/exclude only `knock` membership state events.
-     */
-    KNOCK;
-
-    
-
-
-    companion object
-}
-
-
-/**
- * @suppress
- */
-public object FfiConverterTypeMembershipChangeFilter: FfiConverterRustBuffer<MembershipChangeFilter> {
-    override fun read(buf: ByteBuffer) = try {
-        MembershipChangeFilter.values()[buf.getInt() - 1]
-    } catch (e: IndexOutOfBoundsException) {
-        throw RuntimeException("invalid enum value, something is very wrong!!", e)
-    }
-
-    override fun allocationSize(value: MembershipChangeFilter) = 4UL
-
-    override fun write(value: MembershipChangeFilter, buf: ByteBuffer) {
-        buf.putInt(value.ordinal + 1)
-    }
-}
-
-
-
-
-
-/**
  * The type of change between the previous and current pinned events.
  */
 

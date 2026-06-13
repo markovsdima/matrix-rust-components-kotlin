@@ -59,5 +59,9 @@ signing {
             rootProject.ext["signing.password"],
     )
     sign publishing.publications
-    required { !PUBLISH_VERSION.endsWith("-SNAPSHOT") }
+    required {
+        !PUBLISH_VERSION.endsWith("-SNAPSHOT") &&
+                !gradle.taskGraph.hasTask("${project.path}:publishToMavenLocal") &&
+                !gradle.taskGraph.hasTask("${project.path}:publishReleasePublicationToMavenLocal")
+    }
 }

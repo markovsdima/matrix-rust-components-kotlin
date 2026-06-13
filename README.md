@@ -26,6 +26,16 @@ Usage :
 python3 ./scripts/publish_release.py --version <version> --linkable-ref <sdk-branch/SHA> --module <SDK/CRYPTO>
 ```
 
+To build from a fork in CI, pass the fork URL to the target build script:
+```
+python3 ./scripts/build-rust-for-target.py \
+  --module SDK \
+  --version <version> \
+  --target <android-target> \
+  --ref <sdk-branch/SHA> \
+  --sdk-git-url https://github.com/<owner>/matrix-rust-sdk.git
+```
+
 ## Testing locally
 As the package vendors a pre-built binary of the SDK, all local development is done via the SDK's repo instead of this one.
 You can use the build script to generate the AAR file for testing. Be sure to have checked out the matrix-rust-sdk first.

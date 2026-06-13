@@ -89,12 +89,15 @@ parser.add_argument("-p", "--path-to-sdk", type=str, required=False,
                     help="Choose a module (SDK or CRYPTO)")
 parser.add_argument("-s", "--skip-clone", action="store_true", required=False,
                     help="Skip cloning the Rust SDK repository")
+parser.add_argument("--sdk-git-url", type=str, required=False,
+                    default="https://github.com/matrix-org/matrix-rust-sdk.git",
+                    help="Git URL of the matrix-rust-sdk repository to clone")
 
 args = parser.parse_args()
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 project_root = os.path.dirname(current_dir).rstrip(os.sep)
-sdk_git_url = "https://github.com/matrix-org/matrix-rust-sdk.git"
+sdk_git_url = args.sdk_git_url
 
 if args.path_to_sdk:
     sdk_path = args.path_to_sdk

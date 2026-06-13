@@ -3,7 +3,6 @@
 import argparse
 import os
 import re
-import requests
 import subprocess
 from enum import Enum, auto
 
@@ -25,7 +24,7 @@ def override_version_in_build_version_file(file_path: str, new_version: str):
     with open(file_path, 'r') as file:
         content = file.read()
 
-    new_major, new_minor, new_patch = new_version.split('.')
+    new_major, new_minor, new_patch = new_version.split('.', 2)
 
     content = re.sub(r'(majorVersion\s*=\s*)"(.+)"', rf'\g<1>"{new_major}"', content)
     content = re.sub(r'(minorVersion\s*=\s*)"(.+)"', rf'\g<1>"{new_minor}"', content)
@@ -70,6 +69,8 @@ def upload_asset_to_github_release(
         asset_path: str,
         asset_name: str,
 ):
+    import requests
+
     print(f"Uploading {asset_name} to github release..")
     # Build headers with token and content type
     headers = {
@@ -104,6 +105,8 @@ def create_github_release(
         asset_path: str,
         asset_name: str,
 ):
+    import requests
+
     print(f"Create github release {tag_name}")
     # Build release payload
     payload = {
@@ -227,12 +230,12 @@ def main(args: argparse.Namespace):
         commit_and_push_changes(project_root, commit_message)
 
         release_name = f"{args.module.name.lower()}-v{args.version}"
-        release_notes = f"https://github.com/matrix-org/matrix-rust-sdk/tree/{args.linkable_ref}"
+        release_notes = f"{args.sdk_repo_url}/tree/{args.linkable_ref}"
         asset_path = get_asset_path(project_root, args.module)
         asset_name = get_asset_name(args.module)
         create_github_release(
           github_token,
-          "https://api.github.com/repos/matrix-org/matrix-rust-components-kotlin",
+          args.release_repo_api_url,
           release_name,
           release_name,
           release_notes,
@@ -248,6 +251,12 @@ parser.add_argument("-v", "--version", type=str, required=True,
                     help="Version as a string (e.g. '1.0.0')")
 parser.add_argument("-l", "--linkable-ref", type=str, required=True,
                     help="The git ref to link to in the matrix-rust-sdk project")
+parser.add_argument("--sdk-repo-url", type=str, required=False,
+                    default="https://github.com/matrix-org/matrix-rust-sdk",
+                    help="Repository URL used in release notes")
+parser.add_argument("--release-repo-api-url", type=str, required=False,
+                    default="https://api.github.com/repos/matrix-org/matrix-rust-components-kotlin",
+                    help="GitHub API URL for creating the components release")
 args = parser.parse_args()
 
 main(args)
